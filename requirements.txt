@@ -1,0 +1,7 @@
+streamlit
+langchain
+llama-index
+pypdf
+faiss-cpu
+chromadb
+ollama
