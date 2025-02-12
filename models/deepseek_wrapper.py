@@ -1,11 +1,19 @@
 import ollama
 
-def deepseek_chat(prompt, history=None):
-    if history is None:
-        history = []
-    
-    response = ollama.chat(
-        model="deepseek-r1:1.5b",  # Ensure correct model name
-        messages=history + [{"role": "user", "content": prompt}]
-    )
-    return response["message"]["content"]
+class DeepSeekChat:
+    def __init__(self, model="deepseek-r1:1.5b"):
+        self.model = model
+        self.history = []  # Store conversation history
+
+    def chat(self, prompt):
+        self.history.append({"role": "user", "content": prompt})
+        response = ollama.chat(model=self.model, messages=self.history)
+        
+        bot_response = response["message"]["content"]
+        self.history.append({"role": "assistant", "content": bot_response})
+        
+        return bot_response
+
+    def clear_history(self):
+        """Clears chat memory."""
+        self.history = []
