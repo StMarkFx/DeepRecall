@@ -1,0 +1,14 @@
+__pycache__/
+*.log
+*.so
+*.DS_Store
+chroma_db/
+chroma_index/
+chroma.sqlite3
+*.chroma
+.ollama/
+ollama_cache/
+.streamlit/
+.db.sqlite3
+cache/
+data/*
