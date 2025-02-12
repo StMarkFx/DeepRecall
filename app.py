@@ -1,6 +1,6 @@
 import streamlit as st
-from retriever.vector_store.py import get_retriever
-from models.deepseek_model import deepseek_chat
+from retriever.vector_store import get_retriever
+from models.deepseek_wrapper import deepseek_chat
 
 st.title("DeepSeek RAG Chatbot")
 st.write("Upload a PDF and ask questions!")
