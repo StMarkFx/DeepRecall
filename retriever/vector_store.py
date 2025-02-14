@@ -1,27 +1,25 @@
-from langchain_ollama import OllamaEmbeddings
-from langchain_chroma import Chroma
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import OllamaEmbeddings
+import pickle
 import os
-import config
 
-def process_and_store_documents(pdf_files):
-    """Loads multiple PDFs, extracts text, splits, and stores embeddings dynamically."""
-    docs = []
-    for pdf_path in pdf_files:
-        loader = PyPDFLoader(pdf_path)
-        docs.extend(loader.load())
+VECTOR_DB_PATH = "data/faiss_index"
 
-    # Split text into chunks
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=config.CHUNK_SIZE, chunk_overlap=config.CHUNK_OVERLAP)
-    texts = text_splitter.split_documents(docs)
+# Load FAISS
+def load_vector_store():
+    if os.path.exists(VECTOR_DB_PATH):
+        with open(VECTOR_DB_PATH, "rb") as f:
+            return pickle.load(f)
+    return None
 
-    # Create or update vector store
-    embedding = OllamaEmbeddings(model=config.MODEL_NAME)
-    vectorstore = Chroma.from_documents(texts, embedding, persist_directory=config.VECTOR_DB_PATH)
-    vectorstore.persist()
+# Save FAISS
+def save_vector_store(vectorstore):
+    with open(VECTOR_DB_PATH, "wb") as f:
+        pickle.dump(vectorstore, f)
 
-def get_retriever():
-    """Loads the stored embeddings from ChromaDB."""
-    embedding = OllamaEmbeddings(model=config.MODEL_NAME)
-    return Chroma(persist_directory=config.VECTOR_DB_PATH, embedding_function=embedding).as_retriever()
+def get_retriever(docs):
+    """Create FAISS vector store retriever."""
+    embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
+    vectorstore = FAISS.from_documents(docs, embedding)
+    save_vector_store(vectorstore)
+    return vectorstore.as_retriever()
