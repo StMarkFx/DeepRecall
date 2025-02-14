@@ -8,4 +8,4 @@ pypdf
 faiss-cpu
 chromadb
 ollama
-pptx
+python-pptx
