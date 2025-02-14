@@ -1,5 +1,6 @@
 import streamlit as st
 import os
+import ollama
 from retriever.vector_store import process_and_store_documents, get_retriever
 from models.deepseek_model import DeepSeekChat
 
@@ -7,6 +8,10 @@ st.set_page_config(page_title="DeepSeek RAG Chatbot", layout="wide")
 
 st.title("🤖 DeepSeek RAG Chatbot")
 st.write("Upload PDFs, and chat with the extracted knowledge!")
+
+
+# Preload the model when the app starts
+ollama.pull("deepseek-r1:1.5b")
 
 chatbot = DeepSeekChat()
 
