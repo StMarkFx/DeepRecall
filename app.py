@@ -1,23 +1,33 @@
 import streamlit as st
 from models.deepseek_model import deepseek_chat
-from retriever.vector_store import load_vector_store
+from retriever.vector_store import load_vector_store, process_documents
 
 st.set_page_config(page_title="DeepRecall", layout="wide")
 
 # Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+if "retriever" not in st.session_state:
+    st.session_state.retriever = load_vector_store()
+
+# Sidebar for File Upload
+st.sidebar.title("📂 Upload Documents")
+uploaded_files = st.sidebar.file_uploader("Upload PDFs, DOCX, or PPTX", 
+                                          type=["pdf", "docx", "pptx"], 
+                                          accept_multiple_files=True)
+
+if uploaded_files:
+    st.sidebar.write("📄 Processing documents...")
+    st.session_state.retriever = process_documents(uploaded_files)
+    st.sidebar.success("✅ Documents indexed!")
 
 st.title("🤖 DeepRecall - Chat with Your Files")
 
 # User Input
 user_input = st.chat_input("Ask me anything...")
 
-# Load vector store (FAISS)
-retriever = load_vector_store()
-
 if user_input:
-    # Retrieve relevant docs
+    retriever = st.session_state.retriever
     docs = retriever.invoke(user_input) if retriever else []
     
     # Format history
