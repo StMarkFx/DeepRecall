@@ -1,6 +1,8 @@
 import sys
 import os
 sys.path.append(os.path.abspath("retriever"))
+from utils.chat import generate_response
+
 
 import streamlit as st
 from models.deepseek_model import deepseek_chat
