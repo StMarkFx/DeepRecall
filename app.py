@@ -22,10 +22,16 @@ uploaded_files = st.sidebar.file_uploader("Upload PDFs, DOCX, or PPTX",
                                           type=["pdf", "docx", "pptx"], 
                                           accept_multiple_files=True)
 
+# Ensure uploaded files are indexed
 if uploaded_files:
     st.sidebar.write("📄 Processing documents...")
     st.session_state.retriever = process_documents(uploaded_files)
     st.sidebar.success("✅ Documents indexed!")
+
+# Ensure retriever is always set
+if "retriever" not in st.session_state or st.session_state.retriever is None:
+    st.session_state.retriever = load_vector_store()
+
 
 st.title("🤖 DeepRecall - Chat with Your Files")
 
