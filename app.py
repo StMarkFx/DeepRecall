@@ -27,19 +27,19 @@ if uploaded_files:
 st.title("🤖 DeepRecall - Chat with Your Files")
 
 # User Input
-user_input = st.chat_input("Ask me anything...")
+import streamlit as st
 
+user_input = st.chat_input("Ask me something...")
 if user_input:
-    retriever = st.session_state.retriever
-    docs = retriever.invoke(user_input) if retriever else []
-    
-    # Format history
-    chat_history = [{"role": "assistant", "content": msg} if i % 2 else {"role": "user", "content": msg}
-                    for i, msg in enumerate(st.session_state.chat_history)]
-    
-    # Get response
-    response = deepseek_chat(user_input, chat_history)
-    
+    with st.chat_message("user"):
+        st.markdown(user_input)  # Show user message instantly
+
+    with st.spinner("Thinking..."):  # Show spinner while processing
+        response = generate_response(user_input)  # Call your AI model
+     
+    with st.chat_message("ai"):
+        st.markdown(response)  # Show AI response
+
     # Update chat history
     st.session_state.chat_history.extend([user_input, response])
     
