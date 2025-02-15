@@ -47,3 +47,30 @@ if user_input:
     for i, msg in enumerate(st.session_state.chat_history):
         role = "user" if i % 2 == 0 else "assistant"
         st.chat_message(role).write(msg)
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+uploaded_file = st.file_uploader("Upload a document", type=["pdf", "pptx"])
+if uploaded_file:
+    process_documents(uploaded_file)  # Ensure this does not reset session state
+    st.success("File uploaded and processed!")
+
+# Preserve chat history
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# When user sends a message
+user_input = st.chat_input("Ask me something...")
+if user_input:
+    st.session_state.messages.append({"role": "user", "content": user_input})
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    with st.spinner("Thinking..."):
+        response = generate_response(user_input)
+
+    st.session_state.messages.append({"role": "ai", "content": response})
+    with st.chat_message("ai"):
+        st.markdown(response)
