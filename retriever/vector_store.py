@@ -5,7 +5,9 @@ import os
 import streamlit as st
 from PyPDF2 import PdfReader
 from pptx import Presentation
-from docx import Document as DocxDocument  # Import DOCX processing
+from docx import Document as DocxDocument  # DOCX support
+from concurrent.futures import ThreadPoolExecutor
+from pdfminer.high_level import extract_text
 
 VECTOR_DB_PATH = "data/faiss_index"
 
@@ -20,14 +22,12 @@ def load_vector_store():
             return None
     return None
 
-
 def extract_text_from_file(file):
-    """Extract text from PDFs, DOCX, and PPTX."""
+    """Efficiently extract text from PDFs, PPTX, and DOCX."""
     text = ""
 
     if file.name.endswith(".pdf"):
-        reader = PdfReader(file)
-        text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+        text = extract_text(file)
 
     elif file.name.endswith(".pptx"):
         ppt = Presentation(file)
@@ -40,19 +40,21 @@ def extract_text_from_file(file):
 
     elif file.name.endswith(".docx"):
         doc = DocxDocument(file)
-        text = "\n".join([para.text for para in doc.paragraphs])
+        extracted_text = [para.text for para in doc.paragraphs if para.text.strip()]
+        text = "\n".join(extracted_text)
 
     return text
 
-
 def process_documents(uploaded_files):
-    """Process uploaded files and update FAISS vector store."""
+    """Process files in parallel and add to FAISS vector store."""
     if not uploaded_files:
         return None
 
     docs = []
-    for file in uploaded_files:
-        text = extract_text_from_file(file)
+    with ThreadPoolExecutor() as executor:
+        results = executor.map(extract_text_from_file, uploaded_files)
+    
+    for file, text in zip(uploaded_files, results):
         if text:
             docs.append(Document(page_content=text, metadata={"source": file.name}))
 
@@ -60,11 +62,4 @@ def process_documents(uploaded_files):
         return None
 
     embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
-    vectorstore = FAISS.from_documents(docs, embedding)
-
-    # Save to FAISS for retrieval
-    if not os.path.exists("data"):
-        os.makedirs("data")
-    vectorstore.save_local(VECTOR_DB_PATH)
-
-    return vectorstore
+    return FAISS.from_documents(docs, embedding)

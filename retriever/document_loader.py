@@ -2,7 +2,6 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document as LangchainDocument
 from langchain_core.documents import Document
-from docx import Document
 from pptx import Presentation
 import tempfile
 import os
