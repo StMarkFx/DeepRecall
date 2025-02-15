@@ -5,6 +5,7 @@ import os
 import streamlit as st
 from PyPDF2 import PdfReader
 from pptx import Presentation
+from docx import Document as DocxDocument  # Import DOCX processing
 
 VECTOR_DB_PATH = "data/faiss_index"
 
@@ -21,24 +22,31 @@ def load_vector_store():
 
 
 def extract_text_from_file(file):
-    """Extract text from different file formats."""
+    """Extract text from PDFs, DOCX, and PPTX."""
     text = ""
 
-    if file.name.endswith(".pptx"):
+    if file.name.endswith(".pdf"):
+        reader = PdfReader(file)
+        text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+
+    elif file.name.endswith(".pptx"):
         ppt = Presentation(file)
         extracted_text = []
-
         for slide in ppt.slides:
             for shape in slide.shapes:
                 if hasattr(shape, "text") and shape.has_text_frame:
                     extracted_text.append(shape.text)
-
         text = "\n".join(extracted_text)
+
+    elif file.name.endswith(".docx"):
+        doc = DocxDocument(file)
+        text = "\n".join([para.text for para in doc.paragraphs])
 
     return text
 
+
 def process_documents(uploaded_files):
-    """Process and convert uploaded files into LangChain Documents before adding them to FAISS."""
+    """Process uploaded files and update FAISS vector store."""
     if not uploaded_files:
         return None
 
@@ -52,4 +60,11 @@ def process_documents(uploaded_files):
         return None
 
     embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
-    return FAISS.from_documents(docs, embedding)
+    vectorstore = FAISS.from_documents(docs, embedding)
+
+    # Save to FAISS for retrieval
+    if not os.path.exists("data"):
+        os.makedirs("data")
+    vectorstore.save_local(VECTOR_DB_PATH)
+
+    return vectorstore
