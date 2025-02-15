@@ -8,6 +8,18 @@ from pptx import Presentation
 
 VECTOR_DB_PATH = "data/faiss_index"
 
+def load_vector_store():
+    """Load FAISS vector store if it exists."""
+    if os.path.exists(VECTOR_DB_PATH):
+        try:
+            embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
+            return FAISS.load_local(VECTOR_DB_PATH, embedding)
+        except Exception as e:
+            print(f"Error loading FAISS index: {e}")
+            return None
+    return None
+
+
 def extract_text_from_file(uploaded_file):
     """Extract text from uploaded files (txt, pdf, pptx)."""
     file_extension = uploaded_file.name.split(".")[-1]

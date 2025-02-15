@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.append(os.path.abspath("retriever"))
 import streamlit as st
 from models.deepseek_model import deepseek_chat
 from retriever.vector_store import load_vector_store, process_documents
