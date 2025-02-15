@@ -1,3 +1,7 @@
+import streamlit as st
+from models.deepseek_model import deepseek_chat
+
+
 def generate_response(user_query):
     """Retrieve relevant documents & generate a response."""
     retriever = st.session_state.retriever  
