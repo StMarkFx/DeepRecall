@@ -1,6 +1,7 @@
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document as LangchainDocument
+from langchain_core.documents import Document
 from docx import Document
 from pptx import Presentation
 import tempfile
@@ -31,8 +32,9 @@ def load_and_split_docx(docx_bytes):
 
     return [LangchainDocument(page_content=chunk) for chunk in chunks]
 
+
 def load_and_split_pptx(pptx_bytes):
-    """Load and split PPTX file."""
+    """Load and split PPTX file into Document objects."""
     prs = Presentation(pptx_bytes)
     text = []
 
@@ -43,6 +45,7 @@ def load_and_split_pptx(pptx_bytes):
     
     combined_text = "\n".join(text)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    chunks = text_splitter.split_text(combined_text)
+    text_chunks = text_splitter.split_text(combined_text)
 
-    return [LangchainDocument(page_content=chunk) for chunk in chunks]
+    # Wrap chunks in Document objects
+    return [Document(page_content=chunk) for chunk in text_chunks]
