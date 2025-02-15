@@ -69,7 +69,6 @@ if user_input:
         st.markdown(user_input)
 
     with st.spinner("Thinking..."):
-        response = generate_response(user_input)
 
     st.session_state.messages.append({"role": "ai", "content": response})
     with st.chat_message("ai"):
