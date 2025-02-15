@@ -20,26 +20,22 @@ def load_vector_store():
     return None
 
 
-def extract_text_from_file(uploaded_file):
-    """Extract text from uploaded files (txt, pdf, pptx)."""
-    file_extension = uploaded_file.name.split(".")[-1]
+def extract_text_from_file(file):
+    """Extract text from different file formats."""
+    text = ""
 
-    if file_extension == "txt":
-        return uploaded_file.read().decode("utf-8")  # Read as text
+    if file.name.endswith(".pptx"):
+        ppt = Presentation(file)
+        extracted_text = []
 
-    elif file_extension == "pdf":
-        pdf_reader = PdfReader(uploaded_file)
-        text = "\n".join([page.extract_text() or "" for page in pdf_reader.pages])
-        return text.strip()
+        for slide in ppt.slides:
+            for shape in slide.shapes:
+                if hasattr(shape, "text") and shape.has_text_frame:
+                    extracted_text.append(shape.text)
 
-    elif file_extension == "pptx":
-        ppt = Presentation(uploaded_file)
-        text = "\n".join([slide.shapes.text for slide in ppt.slides if hasattr(slide, "shapes")])
-        return text.strip()
+        text = "\n".join(extracted_text)
 
-    else:
-        st.warning(f"Unsupported file format: {file_extension}")
-        return None
+    return text
 
 def process_documents(uploaded_files):
     """Process and convert uploaded files into LangChain Documents before adding them to FAISS."""
