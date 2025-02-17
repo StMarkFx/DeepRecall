@@ -9,3 +9,4 @@ faiss-cpu
 chromadb
 ollama
 python-pptx
+re
