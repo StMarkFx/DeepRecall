@@ -61,13 +61,14 @@ if user_input:
     with st.spinner("Thinking..."):
         response = generate_response(user_input)  
 
-    # Store both messages properly
+    # Store both messages properly (Fix: Use 'assistant' instead of 'ai')
     st.session_state.chat_history.append({"role": "user", "content": user_input})
     st.session_state.chat_history.append({"role": "assistant", "content": response})
 
     # Show AI response
-    with st.chat_message("assistant"):
+    with st.chat_message("assistant"):  # FIXED: 'assistant' instead of 'ai'
         st.markdown(response)
+
 
 # Preserve chat history correctly
 for message in st.session_state.chat_history:
