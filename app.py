@@ -30,15 +30,18 @@ st.title("🤖 DeepRecall - Chat with Your Files")
 
 # Function to generate AI response
 def generate_response(prompt):
-    """Generate AI response while ensuring English output."""
+    """Generate AI response while ensuring English output and better accuracy."""
     history = st.session_state.chat_history[-5:]  # Keep last 5 messages only
-    response = deepseek_chat(prompt, history)
 
-    # Check if response contains too many non-English characters (Chinese, etc.)
-    if re.search(r'[\u4e00-\u9fff]', response):  # Matches Chinese characters
-        return "Sorry, my response should be in English. Could you try asking again?"
+    fixed_prompt = f"Respond concisely in clear English. If defining a term, provide a dictionary-style explanation.\n\nUser: {prompt}"
+    
+    response = deepseek_chat(fixed_prompt, history)
+
+    # Remove any stray internal thoughts
+    response = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
 
     return response
+
 
 # Function to retrieve document-related context
 def retrieve_context(query):
@@ -50,28 +53,28 @@ def retrieve_context(query):
         return context if context else ""
     return ""
 
-# Chat Interface
+# **🔥 Display existing chat history first**
+for message in st.session_state.chat_history:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# **🚀 Process new user input**
 user_input = st.chat_input("Ask me something...")
 if user_input:
     # Show user message instantly
     with st.chat_message("user"):
         st.markdown(user_input)
 
+    # Store user message in chat history
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
+
     # Generate response
     with st.spinner("Thinking..."):
         response = generate_response(user_input)  
 
-    # Store both messages properly (Fix: Use 'assistant' instead of 'ai')
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
+    # Store AI response in chat history
     st.session_state.chat_history.append({"role": "assistant", "content": response})
 
     # Show AI response
-    with st.chat_message("assistant"):  # FIXED: 'assistant' instead of 'ai'
+    with st.chat_message("assistant"):
         st.markdown(response)
-
-
-# Preserve chat history correctly
-for message in st.session_state.chat_history:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-

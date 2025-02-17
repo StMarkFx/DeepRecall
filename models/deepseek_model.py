@@ -1,13 +1,17 @@
 import ollama
+import re
 
 # Preload model on app start
 MODEL_NAME = "deepseek-r1:1.5b"
 ollama.pull(MODEL_NAME)
 
 def deepseek_chat(prompt, history):
-    """Chat with DeepSeek using Ollama API."""
     response = ollama.chat(
-        model=MODEL_NAME,
+        model="deepseek-r1:1.5b",
         messages=history + [{"role": "user", "content": prompt}]
     )
-    return response["message"]["content"]
+
+    # Ensure the response doesn't contain internal reasoning (`<think>`)
+    cleaned_response = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
+
+    return cleaned_response
