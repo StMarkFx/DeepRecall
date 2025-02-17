@@ -1,3 +1,4 @@
+import re
 import sys
 import os
 import streamlit as st
@@ -32,11 +33,11 @@ def generate_response(prompt):
     """Generate AI response while ensuring English output."""
     history = st.session_state.chat_history[-5:]  # Keep last 5 messages only
     response = deepseek_chat(prompt, history)
-    
-    # Ensure response is in English
-    if not response.isascii():
-        response = "Sorry, I can only respond in English. Let me try again..."
-    
+
+    # Check if response contains too many non-English characters (Chinese, etc.)
+    if re.search(r'[\u4e00-\u9fff]', response):  # Matches Chinese characters
+        return "Sorry, my response should be in English. Could you try asking again?"
+
     return response
 
 # Function to retrieve document-related context
@@ -52,22 +53,24 @@ def retrieve_context(query):
 # Chat Interface
 user_input = st.chat_input("Ask me something...")
 if user_input:
+    # Show user message instantly
     with st.chat_message("user"):
-        st.markdown(user_input)  # Show user message instantly
+        st.markdown(user_input)
 
-    with st.spinner("Thinking..."):  
-        document_context = retrieve_context(user_input)
-        full_prompt = f"Context: {document_context}\n\nUser: {user_input}" if document_context else user_input
-        response = generate_response(full_prompt)
+    # Generate response
+    with st.spinner("Thinking..."):
+        response = generate_response(user_input)  
 
-    with st.chat_message("ai"):
+    # Store both messages properly
+    st.session_state.chat_history.append({"role": "user", "content": user_input})
+    st.session_state.chat_history.append({"role": "assistant", "content": response})
+
+    # Show AI response
+    with st.chat_message("assistant"):
         st.markdown(response)
 
-    # Update chat history
-    st.session_state.chat_history.append({"role": "user", "content": user_input})
-    st.session_state.chat_history.append({"role": "ai", "content": response})
-
-# Preserve chat history
+# Preserve chat history correctly
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+
