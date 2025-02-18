@@ -23,8 +23,13 @@ uploaded_files = st.sidebar.file_uploader("Upload PDFs, DOCX, or PPTX",
 
 if uploaded_files:
     st.sidebar.write("📄 Processing documents... (this may take a few seconds)")
-    st.session_state.retriever = process_documents(uploaded_files)
-    st.sidebar.success("✅ Documents indexed!")
+    
+    try:
+        st.session_state.retriever = process_documents(uploaded_files)
+        st.sidebar.success("✅ Documents indexed!")
+    except Exception as e:
+        st.sidebar.error(f"Error processing documents: {str(e)}")
+
 
 st.title("🤖 DeepRecall - Chat with Your Files")
 
