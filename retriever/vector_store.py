@@ -53,7 +53,7 @@ def process_documents(uploaded_files):
     docs = []
     with ThreadPoolExecutor() as executor:
         results = executor.map(extract_text_from_file, uploaded_files)
-    
+
     for file, text in zip(uploaded_files, results):
         if text:
             docs.append(Document(page_content=text, metadata={"source": file.name}))
@@ -62,4 +62,15 @@ def process_documents(uploaded_files):
         return None
 
     embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
-    return FAISS.from_documents(docs, embedding)
+
+    # Load existing FAISS index if available
+    if os.path.exists(VECTOR_DB_PATH):
+        existing_faiss = FAISS.load_local(VECTOR_DB_PATH, embedding)
+        existing_faiss.add_documents(docs)
+        existing_faiss.save_local(VECTOR_DB_PATH)
+        return existing_faiss  # Return updated retriever
+    else:
+        new_faiss = FAISS.from_documents(docs, embedding)
+        new_faiss.save_local(VECTOR_DB_PATH)
+        return new_faiss  # Return new retriever
+
