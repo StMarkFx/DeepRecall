@@ -6,6 +6,8 @@ sys.path.append(os.path.abspath("retriever"))
 
 from models.deepseek_model import deepseek_chat
 from retriever.vector_store import load_vector_store, process_documents
+from langchain_community.vectorstores import FAISS
+from langchain_core.vectorstores import VectorStoreRetriever  # Import retriever
 
 st.set_page_config(page_title="DeepRecall", layout="wide")
 
@@ -25,7 +27,9 @@ if uploaded_files:
     st.sidebar.write("📄 Processing documents... (this may take a few seconds)")
     
     try:
-        st.session_state.retriever = process_documents(uploaded_files)
+        vector_store = process_documents(uploaded_files)
+        if vector_store:
+            st.session_state.retriever = vector_store.as_retriever(search_kwargs={"k": 3})
         st.sidebar.success("✅ Documents indexed!")
     except Exception as e:
         st.sidebar.error(f"Error processing documents: {str(e)}")
