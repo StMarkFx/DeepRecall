@@ -13,8 +13,12 @@ def generate_response(user_query):
         context = ""
 
     chat_history = st.session_state.get("chat_history", [])
+    
+    # Fix: Ensure chat history format matches what DeepSeek expects
+    history = [{"role": msg["role"], "content": msg["content"]} for msg in chat_history]
+
     prompt = f"Context: {context}\n\nUser: {user_query}\nAI:"
     
-    response = deepseek_chat(prompt, history=chat_history if chat_history else [])
+    response = deepseek_chat(prompt, history=history)
 
     return response
