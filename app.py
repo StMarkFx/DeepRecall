@@ -57,10 +57,11 @@ def retrieve_context(query):
     """Retrieve relevant document context if available."""
     retriever = st.session_state.retriever
     if retriever:
-        docs = retriever.similarity_search(query, k=3)  # Get top 3 relevant docs
+        docs = retriever.get_relevant_documents(query)  # Correct method
         context = "\n\n".join([doc.page_content for doc in docs])
         return context if context else ""
     return ""
+
 
 # **🔥 Display existing chat history first**
 for message in st.session_state.chat_history:
