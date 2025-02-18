@@ -1,17 +1,18 @@
-import ollama
 import re
+import ollama
 
-# Preload model on app start
 MODEL_NAME = "deepseek-r1:1.5b"
-ollama.pull(MODEL_NAME)
 
 def deepseek_chat(prompt, history):
-    response = ollama.chat(
-        model="deepseek-r1:1.5b",
-        messages=history + [{"role": "user", "content": prompt}]
-    )
+    """Generate a chat response using Ollama's DeepSeek model."""
+    try:
+        response = ollama.chat(model=MODEL_NAME, messages=history + [{"role": "user", "content": prompt}])
 
-    # Ensure the response doesn't contain internal reasoning (`<think>`)
-    cleaned_response = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
+        if not response or "message" not in response:
+            return "Sorry, I couldn't generate a response. Try rephrasing your question."
 
-    return cleaned_response
+        cleaned_response = re.sub(r"<think>.*?</think>", "", response["message"]["content"], flags=re.DOTALL).strip()
+        return cleaned_response
+
+    except Exception as e:
+        return f"Error: {str(e)}"
