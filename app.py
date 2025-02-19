@@ -11,11 +11,14 @@ from langchain_core.vectorstores import VectorStoreRetriever  # Import retriever
 
 st.set_page_config(page_title="DeepRecall", layout="wide")
 
+
 # Initialize session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+
 if "retriever" not in st.session_state:
-    st.session_state.retriever = load_vector_store()
+    st.session_state.retriever = load_vector_store()  # ✅ Uses the fixed `load_vector_store()` method
+
 
 # Sidebar for File Upload
 st.sidebar.title("📂 Upload Documents")
