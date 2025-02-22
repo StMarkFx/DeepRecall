@@ -34,10 +34,13 @@ def load_vector_store():
         try:
             embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
             vector_store = FAISS.load_local(VECTOR_DB_PATH, embedding, allow_dangerous_deserialization=True)
+            print("✅ FAISS Vector Store Loaded Successfully!")
             return vector_store.as_retriever(search_kwargs={"k": 3})  # Return retriever instead of vector store
         except ValueError as e:
             print(f"Error loading FAISS index: {e}")
             return None
+    else:
+        print("❌ No FAISS Vector Store found!")
     return None
 
 
@@ -63,6 +66,8 @@ def extract_text_from_file(file):
         extracted_text = [para.text for para in doc.paragraphs if para.text.strip()]
         text = "\n".join(extracted_text)
 
+    print(f"Extracted text from {file.name}: {text[:500]}...")  # Log first 500 characters
+
     return text
 
 def process_documents(uploaded_files):
@@ -79,6 +84,7 @@ def process_documents(uploaded_files):
             docs.append(Document(page_content=text, metadata={"source": file.name}))
 
     if not docs:
+        print("No valid documents to index.")
         return None
 
     embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
