@@ -72,12 +72,12 @@ def retrieve_context(query):
     return ""
 
 
-# **🔥 Display existing chat history first**
+# 🔥 Display existing chat history first**
 for message in st.session_state.chat_history:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# **🚀 Process new user input**
+# 🚀\ Process new user input**
 user_input = st.chat_input("Ask me something...")
 if user_input:
     # Show user message instantly
