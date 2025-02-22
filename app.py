@@ -57,12 +57,18 @@ def generate_response(prompt):
 
 # Function to retrieve document-related context
 def retrieve_context(query):
-    """Retrieve relevant document context if available."""
+    """Retrieve relevant document context."""
     retriever = st.session_state.retriever
     if retriever:
-        docs = retriever.get_relevant_documents(query)  # Correct method
-        context = "\n\n".join([doc.page_content for doc in docs])
-        return context if context else ""
+        docs = retriever.get_relevant_documents(query)
+        if docs:
+            print(f"Retrieved {len(docs)} document(s) for query: '{query}'")
+            for doc in docs:
+                print(f"Source: {doc.metadata['source']}, Content: {doc.page_content[:200]}...")
+            context = "\n\n".join([doc.page_content for doc in docs])
+            return context
+        else:
+            print("❌ No relevant documents retrieved.")
     return ""
 
 
