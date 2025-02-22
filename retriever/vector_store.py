@@ -12,21 +12,6 @@ from pdfminer.high_level import extract_text
 
 VECTOR_DB_PATH = "data/faiss_index"
 
-#def load_vector_store():
-#    """Load FAISS vector store safely."""
-#    if os.path.exists(VECTOR_DB_PATH):
-#        try:
-#            embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
-#            return FAISS.load_local(VECTOR_DB_PATH, embedding, allow_dangerous_deserialization=True)  # ✅ Ensuring safe deserialization
-#        except ValueError as e:
-#            if "allow_dangerous_deserialization" in str(e):
-#                print("Warning: FAISS index might be corrupted. Rebuilding the index...")
-#                os.system("rm -r data/faiss_index")  # Delete corrupted FAISS index
-#                return None  # Force new indexing
-#            else:
-#                print(f"Error loading FAISS index: {e}")
-#                return None
-#    return None
 
 def load_vector_store():
     """Load FAISS vector store safely and return a retriever."""
