@@ -25,3 +25,19 @@ DeepRecall/
 │── app.py                       # Streamlit UI and chatbot logic
 │── requirements.txt             # Dependencies
 │── README.md                    # Project documentation
+
+📦 Installation
+1. Clone the Repository
+bash
+Copy
+Edit
+git clone https://github.com/yourusername/DeepRecall.git
+cd DeepRecall
+2. Create a Virtual Environment (Optional but Recommended)
+bash
+Copy
+Edit
+python -m venv venv
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+3. Install Dependencies
