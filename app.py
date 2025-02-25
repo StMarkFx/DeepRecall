@@ -44,15 +44,21 @@ st.title("🤖 DeepRecall - Chat with Your Files")
 def generate_response(prompt):
     """Generate AI response while ensuring English output and better accuracy."""
     history = st.session_state.chat_history[-5:]  # Keep last 5 messages only
+    context = retrieve_context(prompt)
 
-    fixed_prompt = f"Respond concisely in clear English. If defining a term, provide a dictionary-style explanation.\n\nUser: {prompt}"
-    
+    fixed_prompt = f"""
+    Context:
+    {context}
+
+    User: {prompt}
+
+    Respond concisely in clear English. If defining a term, provide a dictionary-style explanation.
+    """
+
     response = deepseek_chat(fixed_prompt, history)
-
-    # Remove any stray internal thoughts
     response = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
-
     return response
+
 
 
 # Function to retrieve document-related context
