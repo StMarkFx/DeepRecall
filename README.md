@@ -41,3 +41,18 @@ python -m venv venv
 source venv/bin/activate  # macOS/Linux
 venv\Scripts\activate     # Windows
 3. Install Dependencies
+pip install -r requirements.txt
+🛠️ Usage
+1. Start the Application
+bash
+Copy
+Edit
+streamlit run app.py
+2. Upload Documents
+Click on "📂 Upload Documents" in the sidebar.
+Select PDFs, DOCX, or PPTX files.
+Wait for them to be indexed.
+3. Ask Questions
+Type your query in the chat input field.
+The AI retrieves relevant context from the uploaded documents.
+AI responds based on the retrieved content.
