@@ -56,3 +56,18 @@ Wait for them to be indexed.
 Type your query in the chat input field.
 The AI retrieves relevant context from the uploaded documents.
 AI responds based on the retrieved content.
+
+🧩 How It Works
+Document Processing
+
+PDFs, DOCX, and PPTX files are parsed.
+Text is split into smaller chunks for efficient retrieval.
+Vector Storage
+
+Text chunks are embedded using DeepSeek-R1 embeddings.
+FAISS stores these embeddings for fast semantic search.
+Retrieval & Augmented Generation
+
+When a user asks a question, the most relevant document chunks are retrieved.
+The retrieved text is passed as context to the DeepSeek API.
+DeepSeek generates a response that incorporates the document content.
