@@ -71,3 +71,17 @@ Retrieval & Augmented Generation
 When a user asks a question, the most relevant document chunks are retrieved.
 The retrieved text is passed as context to the DeepSeek API.
 DeepSeek generates a response that incorporates the document content.
+
+🛠️ Key Components
+vector_store.py
+Loads and manages FAISS vector storage.
+Extracts text from documents.
+Generates and stores embeddings.
+document_loader.py
+Loads and splits documents into manageable chunks.
+Uses pdfminer, python-pptx, and python-docx for parsing.
+app.py
+Streamlit-based UI for chat interactions.
+Handles document uploads and query processing.
+deepseek_model.py
+Connects to the DeepSeek API for AI-generated responses.
