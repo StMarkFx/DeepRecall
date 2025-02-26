@@ -47,8 +47,13 @@ def generate_response(prompt):
     context = retrieve_context(prompt)
 
     fixed_prompt = f"""
-    Context:
+    You are an AI assistant with access to the following documents:
+
     {context}
+
+    When answering, prioritize using information from the retrieved documents above. 
+    If no relevant documents exist, say "I could not find relevant information." 
+    Be concise, clear, and avoid speculation.
 
     User: {prompt}
 
