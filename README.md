@@ -25,6 +25,7 @@ DeepRecall/
 │── app.py                       # Streamlit UI and chatbot logic
 │── requirements.txt             # Dependencies
 │── README.md                    # Project documentation
+```
 
 📦 Installation
 1. Clone the Repository
