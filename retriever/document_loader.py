@@ -26,7 +26,7 @@ def load_and_split_docx(docx_bytes):
     doc = Document(docx_bytes)
     text = "\n".join([para.text for para in doc.paragraphs if para.text.strip()])
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     chunks = text_splitter.split_text(text)
 
     return [LangchainDocument(page_content=chunk) for chunk in chunks]
@@ -43,7 +43,7 @@ def load_and_split_pptx(pptx_bytes):
                 text.append(shape.text)
     
     combined_text = "\n".join(text)
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     text_chunks = text_splitter.split_text(combined_text)
 
     # Wrap chunks in Document objects
