@@ -20,7 +20,7 @@ def load_vector_store():
             embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
             vector_store = FAISS.load_local(VECTOR_DB_PATH, embedding, allow_dangerous_deserialization=True)
             print("✅ FAISS Vector Store Loaded Successfully!")
-            return vector_store.as_retriever(search_kwargs={"k": 3})  # Return retriever instead of vector store
+            return vector_store.as_retriever(search_kwargs={"k": 7})  # Return retriever instead of vector store
         except ValueError as e:
             print(f"Error loading FAISS index: {e}")
             return None
