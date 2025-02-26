@@ -18,7 +18,7 @@ def load_and_split_pdf(pdf_bytes):
     finally:
         os.remove(temp_file_path)  # Cleanup temp file
     
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     return text_splitter.split_documents(docs)
 
 def load_and_split_docx(docx_bytes):
