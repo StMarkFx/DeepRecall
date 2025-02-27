@@ -23,15 +23,15 @@ EMBEDDING_MODELS = {
 # Select model (change here)
 MODEL_NAME = EMBEDDING_MODELS["bge"]  # Try "e5" or "minilm" too
 
-# Load embedding model
-embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME)
+
 
 
 def load_vector_store():
     """Load FAISS vector store safely and return a retriever."""
     if os.path.exists(VECTOR_DB_PATH):
         try:
-            embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
+            # Load embedding model
+            embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME)
             vector_store = FAISS.load_local(VECTOR_DB_PATH, embedding, allow_dangerous_deserialization=True)
             print("✅ FAISS Vector Store Loaded Successfully!")
             return vector_store.as_retriever(search_kwargs={"k": 7})  # Return retriever instead of vector store
@@ -86,7 +86,8 @@ def process_documents(uploaded_files):
         print("No valid documents to index.")
         return None
 
-    embedding = OllamaEmbeddings(model="deepseek-r1:1.5b")
+    # Load embedding model
+    embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME)
 
     if os.path.exists(VECTOR_DB_PATH):
         existing_faiss = FAISS.load_local(VECTOR_DB_PATH, embedding, allow_dangerous_deserialization=True)  # ✅ Fix applied here too
