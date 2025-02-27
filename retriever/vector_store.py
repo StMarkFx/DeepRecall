@@ -1,5 +1,5 @@
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import OllamaEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_core.documents import Document
 import os
 import streamlit as st
@@ -11,6 +11,20 @@ from pdfminer.high_level import extract_text
 
 
 VECTOR_DB_PATH = "data/faiss_index"
+
+# Available embedding models
+EMBEDDING_MODELS = {
+    "minilm": "sentence-transformers/all-MiniLM-L6-v2",
+    "bge": "BAAI/bge-base-en",
+    "e5": "intfloat/e5-large-v2",
+    "deepseek": "deepseek-ai/deepseek-embedding"
+}
+
+# Select model (change here)
+MODEL_NAME = EMBEDDING_MODELS["bge"]  # Try "e5" or "minilm" too
+
+# Load embedding model
+embedding = HuggingFaceEmbeddings(model_name=MODEL_NAME)
 
 
 def load_vector_store():
