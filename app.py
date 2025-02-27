@@ -72,7 +72,10 @@ def retrieve_context(query):
     if retriever:
         docs = retriever.get_relevant_documents(query)
         if docs:
-            formatted_context = "\n\n".join([f"📄 {doc.metadata['source']}:\n{doc.page_content[:500]}" for doc in docs])
+            print(f"🔎 Retrieved {len(docs)} document(s) for query: '{query}'")
+            for doc in docs:
+                print(f"📄 Source: {doc.metadata.get('source', 'Unknown')} \nContent: {doc.page_content[:500]}...\n")
+            formatted_context = "\n\n".join([f"📄 {doc.metadata.get('source', 'Unknown')}:\n{doc.page_content[:500]}" for doc in docs])
             return formatted_context
     return ""
 
