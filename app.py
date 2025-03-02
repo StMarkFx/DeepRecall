@@ -64,7 +64,7 @@ def generate_response(prompt):
     response = re.sub(r"<think>.*?</think>", "", response, flags=re.DOTALL).strip()
     return response
 
-
+#hc ucj 
 
 # Function to retrieve document-related context
 def retrieve_context(query):

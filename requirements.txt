@@ -10,3 +10,4 @@ chromadb
 ollama
 python-pptx
 re
+sentence-transformers
