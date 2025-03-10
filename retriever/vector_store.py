@@ -24,6 +24,21 @@ EMBEDDING_MODELS = {
 MODEL_NAME = EMBEDDING_MODELS["bge"]  # Try "e5" or "minilm" too
 
 
+from langchain_community.embeddings import HuggingFaceEmbeddings
+
+def get_embedding_model(model_name="bge"):
+    """Load the selected embedding model."""
+    EMBEDDING_MODELS = {
+        "minilm": "sentence-transformers/all-MiniLM-L6-v2",
+        "bge": "BAAI/bge-base-en",
+        "e5": "intfloat/e5-large-v2",
+        "deepseek": "deepseek-ai/deepseek-embedding"
+    }
+    return HuggingFaceEmbeddings(model_name=EMBEDDING_MODELS.get(model_name, "bge"))
+
+embedding = get_embedding_model("bge")  # Change to "e5", "minilm", etc.
+
+
 
 
 def load_vector_store():
