@@ -1,27 +1,12 @@
-import streamlit as st
-from models.deepseek_model import deepseek_chat
-from app import retrieve_context
+from retriever.vector_store import VectorStore
+from models.deepseek_model import DeepSeekModel
 
-def generate_response(user_query):
-    """Retrieve document context & generate AI response."""
-    retriever = st.session_state.get("retriever", None)
-    context = retrieve_context(user_query) if retriever else ""
+class Chat:
+    def __init__(self):
+        self.retriever = VectorStore()
+        self.model = DeepSeekModel()
 
-    chat_history = st.session_state.get("chat_history", [])
-    history = [{"role": msg["role"], "content": msg["content"]} for msg in chat_history]
-
-    prompt = f"""
-    You are answering user questions using document knowledge.
-    If relevant information is found in the document, use it to answer.
-    Otherwise, state that you do not have relevant information.
-
-    Document Context:
-    {context}
-
-    User: {user_query}
-    AI:
-    """
-
-    response = deepseek_chat(prompt, history=history)
-    return response
-
+    def get_response(self, query):
+        relevant_indices = self.retriever.search(query)
+        context = " ".join([f"Doc {i+1}" for i in relevant_indices])  # Placeholder for actual text retrieval
+        return self.model.generate_response(query, context)
