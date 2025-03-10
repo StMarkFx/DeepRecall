@@ -21,6 +21,8 @@ DeepRecall/
 │   ├── document_loader.py      # Document parsing and text extraction
 │── models/
 │   ├── deepseek_model.py       # DeepSeek API call for chat responses
+│── utils/
+│   ├── chat.py 
 │── data/                        # Stored FAISS vector index
 │── app.py                       # Streamlit UI and chatbot logic
 │── requirements.txt             # Dependencies
