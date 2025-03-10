@@ -15,22 +15,22 @@ VECTOR_DB_PATH = "data/faiss_index"
 EMBEDDING_MODELS = {
     "minilm": "sentence-transformers/all-MiniLM-L6-v2",
     "bge": "BAAI/bge-base-en",
-    "e5": "intfloat/e5-large-v2",
+    "e5": "intfloat/e5-large-v2",  # Using e5-large-v2
     "deepseek": "deepseek-ai/deepseek-embedding"
 }
 
 # Select model
-MODEL_NAME = EMBEDDING_MODELS["bge"]  # Change if needed
+MODEL_NAME = EMBEDDING_MODELS["e5"]  # Change to use e5-large-v2
 
 
-def get_embedding_model(model_name="bge"):
+def get_embedding_model(model_name="e5"):
     """Load and return the selected embedding model."""
-    model_path = EMBEDDING_MODELS.get(model_name, EMBEDDING_MODELS["bge"])
+    model_path = EMBEDDING_MODELS.get(model_name, EMBEDDING_MODELS["e5"])
     return HuggingFaceEmbeddings(model_name=model_path)
 
 
 # Initialize embeddings once (avoid redundant calls)
-embedding = get_embedding_model("bge")
+embedding = get_embedding_model("e5")
 
 
 def load_vector_store():
