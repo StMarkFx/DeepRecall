@@ -4,6 +4,7 @@ langchain_ollama
 langchain_chroma
 langchain_community
 langchain_deepseek
+langchain_huggingface
 llama-index
 PyPDF2
 faiss-cpu
