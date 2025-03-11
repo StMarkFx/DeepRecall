@@ -13,6 +13,3 @@ chromadb
 ollama 
 sentence-transformers 
 torch 
-torchvision 
-torchaudio 
-tiktoken
